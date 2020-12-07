@@ -6,10 +6,10 @@
 #include<fstream>
 #include<iostream>
 using namespace std;
-
+#define Wong 3.14159//Add by WongJyufong
 #pragma comment(lib, "glew32.lib")
 
-// Èý½ÇÃæÆ¬ÖÐµÄ¶¥µãÐòÁÐ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬ï¿½ÐµÄ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 typedef struct vIndex {
 	unsigned int a, b, c;
 	vIndex(int ia, int ib, int ic) : a(ia), b(ib), c(ic) {}
@@ -23,19 +23,19 @@ const int TRANSFORM_SCALE = 0;
 const int TRANSFORM_ROTATE = 1;
 const int TRANSFORM_TRANSLATE = 2;
 
-const double DELTA_DELTA = 0.1;    // DeltaµÄ±ä»¯ÂÊ
-const double DEFAULT_DELTA = 0.3;    // Ä¬ÈÏµÄDeltaÖµ
+const double DELTA_DELTA = 0.1;    // Deltaï¿½Ä±ä»¯ï¿½ï¿½
+const double DEFAULT_DELTA = 0.3;    // Ä¬ï¿½Ïµï¿½DeltaÖµ
 
 double scaleDelta = DEFAULT_DELTA;
 double rotateDelta = DEFAULT_DELTA;
 double translateDelta = DEFAULT_DELTA;
 
-vec3 scaleTheta(1.0, 1.0, 1.0);    // Ëõ·Å¿ØÖÆ±äÁ¿
-vec3 rotateTheta(0.0, 0.0, 0.0);    // Ðý×ª¿ØÖÆ±äÁ¿
-vec3 translateTheta(0.0, 0.0, 0.0);    // Æ½ÒÆ¿ØÖÆ±äÁ¿
+vec3 scaleTheta(1.0, 1.0, 1.0);    // ï¿½ï¿½ï¿½Å¿ï¿½ï¿½Æ±ï¿½ï¿½ï¿½
+vec3 rotateTheta(0.0, 0.0, 0.0);    // ï¿½ï¿½×ªï¿½ï¿½ï¿½Æ±ï¿½ï¿½ï¿½
+vec3 translateTheta(0.0, 0.0, 0.0);    // Æ½ï¿½Æ¿ï¿½ï¿½Æ±ï¿½ï¿½ï¿½
 
 GLint matrixLocation;
-int currentTransform = TRANSFORM_TRANSLATE;    // ÉèÖÃµ±Ç°±ä»»
+int currentTransform = TRANSFORM_TRANSLATE;    // ï¿½ï¿½ï¿½Ãµï¿½Ç°ï¿½ä»»
 int mainWindow;
 int NUM_VERTICES = 8;
 
@@ -76,36 +76,36 @@ void init()
 {
 	generateCube();
 
-	// ´´½¨¶¥µãÊý×é¶ÔÏó
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	GLuint vao[1];
 	glGenVertexArrays(1, vao);
 	glBindVertexArray(vao[0]);
 
-	// ´´½¨²¢³õÊ¼»¯¶¥µã»º´æ¶ÔÏó
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½ï¿½ï¿½ï¿½ï¿½
 	GLuint buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, NUM_VERTICES * sizeof(vec3), vertices, GL_STATIC_DRAW);
 
-	// ´´½¨²¢³õÊ¼»¯¶¥µãË÷Òý»º´æ¶ÔÏó
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	GLuint vertexIndexBuffer;
 	glGenBuffers(1, &vertexIndexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, faces.size() * sizeof(vec3i), faces.data(), GL_STATIC_DRAW);
 
-	// ¶ÁÈ¡×ÅÉ«Æ÷²¢Ê¹ÓÃ
+	// ï¿½ï¿½È¡ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
 	GLuint program = InitShader("vshader.glsl", "fshader.glsl");
 	glUseProgram(program);
 
-	// ´Ó¶¥µã×ÅÉ«Æ÷ÖÐ³õÊ¼»¯¶¥µãµÄÎ»ÖÃ
+	// ï¿½Ó¶ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½Ð³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	GLuint pLocation = glGetAttribLocation(program, "vPosition");
 	glEnableVertexAttribArray(pLocation);
 	glVertexAttribPointer(pLocation, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
-	// »ñµÃ¾ØÕó´æ´¢Î»ÖÃ
+	// ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½æ´¢Î»ï¿½ï¿½
 	matrixLocation = glGetUniformLocation(program, "matrix");
 
-	// °×É«±³¾°
+	// ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 }
 
@@ -116,16 +116,16 @@ void init()
 
 void display()
 {
-	// ÇåÀí´°¿Ú
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Éú³É±ä»»¾ØÕó
+	// ï¿½ï¿½ï¿½É±ä»»ï¿½ï¿½ï¿½ï¿½
 	mat4 m(1.0, 0.0, 0.0, 0.0,
 		0.0, 1.0, 0.0, 0.0,
 		0.0, 0.0, 1.0, 0.0,
 		0.0, 0.0, 0.0, 1.0);
 
-	// ¿ÉÊ¹ÓÃScale(),Translate(),RotateX(),RotateY(),RotateZ()µÈº¯Êý¡£º¯Êý¶¨ÒåÔÚmat.h
+	// ï¿½ï¿½Ê¹ï¿½ï¿½Scale(),Translate(),RotateX(),RotateY(),RotateZ()ï¿½Èºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mat.h
 	m = Translate(translateTheta) * m;
 
 	m = RotateZ(rotateTheta[2])*m;
@@ -134,9 +134,9 @@ void display()
 
 	m = Scale(scaleTheta) * m;
 
-	// ´ÓÖ¸¶¨Î»ÖÃmatrixLocationÖÐ´«Èë±ä»»¾ØÕóm
+	// ï¿½ï¿½Ö¸ï¿½ï¿½Î»ï¿½ï¿½matrixLocationï¿½Ð´ï¿½ï¿½ï¿½ä»»ï¿½ï¿½ï¿½ï¿½m
 	glUniformMatrix4fv(matrixLocation, 1, GL_TRUE, m);
-	// »æÖÆÁ¢·½ÌåÖÐµÄ¸÷¸öÈý½ÇÐÎ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÐµÄ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	glDrawElements(GL_TRIANGLES, int(faces.size() * 3), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
 	glutSwapBuffers();
@@ -170,12 +170,12 @@ void idleFunction()
 	glutPostWindowRedisplay(mainWindow);
 }
 
-// Í¨¹ýDeltaÖµ¸üÐÂTheta
+// Í¨ï¿½ï¿½DeltaÖµï¿½ï¿½ï¿½ï¿½Theta
 void updateTheta(int axis) {
 	bz = axis;
 }
 
-// ¸´Ô­ThetaºÍDelta
+// ï¿½ï¿½Ô­Thetaï¿½ï¿½Delta
 void resetTheta()
 {
 	/*m = (1.0, 0.0, 0.0, 0.0,
@@ -190,7 +190,7 @@ void resetTheta()
 	translateDelta = DEFAULT_DELTA;
 }
 
-// ¸üÐÂ±ä»¯DeltaÖµ
+// ï¿½ï¿½ï¿½Â±ä»¯DeltaÖµ
 void updateDelta(int sign)
 {
 	switch (currentTransform) {
@@ -234,7 +234,7 @@ void keyboard(unsigned char key, int x, int y)
 		resetTheta();
 		break;
 	case 033:
-		// Esc°´¼ü
+		// Escï¿½ï¿½ï¿½ï¿½
 		exit(EXIT_SUCCESS);
 		break;
 	}
@@ -291,10 +291,10 @@ void mainWindowMouse(int button, int state, int x, int y)
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);    // ´°¿ÚÖ§³ÖË«ÖØ»º³åºÍÉî¶È²âÊÔ
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);    // ï¿½ï¿½ï¿½ï¿½Ö§ï¿½ï¿½Ë«ï¿½Ø»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(600, 600);
-	mainWindow = glutCreateWindow("ÊµÑé¶þ_Áº¹óð©");
+	mainWindow = glutCreateWindow("Êµï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½");
 
 	glewExperimental = GL_TRUE;
 	glewInit();
@@ -304,9 +304,9 @@ int main(int argc, char** argv)
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
 	glutMouseFunc(mainWindowMouse);
-	// Êä³ö°ïÖúÐÅÏ¢
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 	printHelp();
-	// ÆôÓÃÉî¶È²âÊÔ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½
 	glEnable(GL_DEPTH_TEST);
 	glutMainLoop();
 	return 0;
